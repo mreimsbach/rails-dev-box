@@ -8,27 +8,25 @@ function install {
 
 echo updating package information
 apt-add-repository -y ppa:brightbox/ruby-ng >/dev/null 2>&1
+apt-add-repository -y ppa:webupd8team/java >/dev/null 2>&1
 apt-get -y update >/dev/null 2>&1
 
 install 'development tools' build-essential
 
-install Ruby ruby2.2 ruby2.2-dev
-update-alternatives --set ruby /usr/bin/ruby2.2 >/dev/null 2>&1
-update-alternatives --set gem /usr/bin/gem2.2 >/dev/null 2>&1
-
-echo installing Bundler
-gem install bundler -N >/dev/null 2>&1
+# rvm and ruby
+echo installing ruby-1.8.7
+su - vagrant -c 'rvm install ruby-1.8.7-head' >/dev/null 2>&1
 
 install Git git
 install SQLite sqlite3 libsqlite3-dev
-install memcached memcached
-install Redis redis-server
-install RabbitMQ rabbitmq-server
+#install memcached memcached
+#install Redis redis-server
+#install RabbitMQ rabbitmq-server
 
-install PostgreSQL postgresql postgresql-contrib libpq-dev
-sudo -u postgres createuser --superuser vagrant
-sudo -u postgres createdb -O vagrant activerecord_unittest
-sudo -u postgres createdb -O vagrant activerecord_unittest2
+#install PostgreSQL postgresql postgresql-contrib libpq-dev
+#sudo -u postgres createuser --superuser vagrant
+#sudo -u postgres createdb -O vagrant activerecord_unittest
+#sudo -u postgres createdb -O vagrant activerecord_unittest2
 
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
@@ -41,11 +39,24 @@ GRANT ALL PRIVILEGES ON activerecord_unittest.* to 'rails'@'localhost';
 GRANT ALL PRIVILEGES ON activerecord_unittest2.* to 'rails'@'localhost';
 GRANT ALL PRIVILEGES ON inexistent_activerecord_unittest.* to 'rails'@'localhost';
 SQL
-
+echo installing MongoDb
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+sudo apt-get update >/dev/null 2>&1
+sudo apt-get install -y mongodb-org
 install 'Nokogiri dependencies' libxml2 libxml2-dev libxslt1-dev
-install 'ExecJS runtime' nodejs
+install 'Imagemagick' imagemagick libmagickwand-dev libmagickcore-dev
 
+echo installing Java JDK8
+echo debconf shared/accepted-oracle-license-v1-1 select true | \
+    sudo debconf-set-selections
+echo debconf shared/accepted-oracle-license-v1-1 seen true | \
+    sudo debconf-set-selections
+sudo apt-get install -y oracle-java8-installer
 # Needed for docs generation.
-update-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8
-
+#update-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8
+echo installing aptitude
+sudo apt-get install -y aptitude >/dev/null 2>&1
+echo installing latex and pdflatex
+aptitude install -y texlive-latex-base texlive-latex3 texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra libxml2-dev libxslt-dev
 echo 'all set, rock on!'
