@@ -20,13 +20,14 @@ su - vagrant -c 'rvm install ruby-1.8.7-head' >/dev/null 2>&1
 install Git git
 install SQLite sqlite3 libsqlite3-dev
 #install memcached memcached
-#install Redis redis-server
+install Redis redis-server
 #install RabbitMQ rabbitmq-server
 
-#install PostgreSQL postgresql postgresql-contrib libpq-dev
-#sudo -u postgres createuser --superuser vagrant
-#sudo -u postgres createdb -O vagrant activerecord_unittest
-#sudo -u postgres createdb -O vagrant activerecord_unittest2
+#PostgreSQL
+install PostgreSQL postgresql postgresql-contrib libpq-dev
+sudo -u postgres createuser --superuser vagrant
+sudo -u postgres createdb -O vagrant activerecord_unittest
+sudo -u postgres createdb -O vagrant activerecord_unittest2
 
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
@@ -41,9 +42,16 @@ GRANT ALL PRIVILEGES ON inexistent_activerecord_unittest.* to 'rails'@'localhost
 SQL
 echo installing MongoDb
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+#MongoDb 3
+#echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+#sudo apt-get update >/dev/null 2>&1
+#sudo apt-get install -y mongodb-org
+#MongoDb 2
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
 sudo apt-get update >/dev/null 2>&1
-sudo apt-get install -y mongodb-org
+sudo apt-get install -y mongodb-org=2.6.9 mongodb-org-server=2.6.9 mongodb-org-shell=2.6.9 mongodb-org-mongos=2.6.9 mongodb-org-tools=2.6.9 --force-yes
+
+
 install 'Nokogiri dependencies' libxml2 libxml2-dev libxslt1-dev
 install 'Imagemagick' imagemagick libmagickwand-dev libmagickcore-dev
 
