@@ -54,7 +54,7 @@ sudo apt-get install -y mongodb-org=2.6.9 mongodb-org-server=2.6.9 mongodb-org-s
 
 install 'Nokogiri dependencies' libxml2 libxml2-dev libxslt1-dev
 install 'Imagemagick' imagemagick libmagickwand-dev libmagickcore-dev
-
+install 'Qt Libs' libqt4-dev libqtwebkit-dev
 echo installing Java JDK8
 echo debconf shared/accepted-oracle-license-v1-1 select true | \
     sudo debconf-set-selections
