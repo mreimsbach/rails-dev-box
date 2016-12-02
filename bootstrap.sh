@@ -13,6 +13,7 @@ apt-get -y update >/dev/null 2>&1
 
 install 'development tools' build-essential
 install 'libgmp-dev' libgmp-dev
+install 'phantomjs' phantomjs
 # rvm and ruby
 echo installing ruby-1.8.7
 su - vagrant -c 'rvm install ruby-1.8.7-head' >/dev/null 2>&1
